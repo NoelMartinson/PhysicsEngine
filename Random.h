@@ -1,5 +1,7 @@
 #pragma once
 #include "raylib.h"
+#include "Effector.h"
+#include <algorithm>
 
 inline float GetRandomFloat()
 {
@@ -13,5 +15,6 @@ inline float GetRandomFloat(float max)
 
 inline float GetRandomFloat(float min, float max)
 {
+    if (min > max)std::swap(min, max);
     return min + GetRandomFloat() * (max - min);
 }
