@@ -6,22 +6,20 @@ Vector2 World::gravity = { 0, 9.8f };
 
 void World::Step(float dt)
 {
-	// reset acceleration
-	for (auto& body : bodies) body.acceleration = Vector2{ 0, 0 };
-	for (auto& body : bodies) body.AddForce(gravity * body.gravityScale * 100.0f, ForceMode::Acceleration);
+	for (auto& body : bodies) body.AddForce(gravity * body.gravityScale, ForceMode::Acceleration);
 
-	// force effector
 	for (auto& effector : effectors) effector->Apply(bodies);
 
-	// integrator
 	for (auto& body : bodies) if (body.bodyType == BodyType::Dynamic) SemiImplicitEuler(body, dt);
-	UpdateCollision();
+	for(int i = 0; i < 4; ++i) UpdateCollision();
+
+	for (auto& body : bodies) body.acceleration = Vector2{ 0, 0 };
 }
 
 void World::Draw()
 {
-	for (const auto& body : bodies) body.Draw();
 	for (auto& effector : effectors) effector->Draw();
+	for (const auto& body : bodies) body.Draw();
 }
 
 void World::UpdateCollision()
@@ -31,32 +29,32 @@ void World::UpdateCollision()
 	SeparateContacts(contacts);
 	ResolveContacts(contacts);
 
-
 	// collision
 	for (auto& body : bodies)
 	{
-		if (body.position.x + body.size > GetScreenWidth())
+		if (body.position.x + body.size > boundsMax.x)
 		{
-			body.position.x = GetScreenWidth() - body.size;
-			body.velocity.x *= -body.restitution;
+			body.position.x = boundsMax.x - body.size;
+			body.velocity.x = -body.velocity.x * body.restitution;
 		}
-		if (body.position.x - body.size < 0)
+		if (body.position.x - body.size < boundsMin.x)
 		{
-			body.position.x = body.size;
-			body.velocity.x *= -body.restitution;
+			body.position.x = boundsMin.x + body.size;
+			body.velocity.x = -body.velocity.x * body.restitution;
 		}
-		if (body.position.y + body.size > GetScreenHeight())
+		if (body.position.y + body.size > boundsMax.y)
 		{
-			body.position.y = GetScreenHeight() - body.size;
-			body.velocity.y *= -body.restitution;
+			body.position.y = boundsMax.y - body.size;
+			body.velocity.y = -body.velocity.y * body.restitution;
 		}
-		if (body.position.y - body.size < 0)
+		if (body.position.y - body.size < boundsMin.y)
 		{
-			body.position.y = body.size;
-			body.velocity.y *= -body.restitution;
+			body.position.y = boundsMin.y + body.size;
+			body.velocity.y = -body.velocity.y * body.restitution;
 		}
 	}
 }
+
 
 void World::AddBody(const Body& body)
 {
@@ -66,4 +64,17 @@ void World::AddBody(const Body& body)
 void World::AddEffector(Effector* effector)
 {
 	effectors.push_back(effector);
+}
+
+Body* World::GetBodyIntersect(Vector2 position)
+{
+	for (auto& body : bodies)
+	{
+		if (CheckCollisionPointCircle(position, body.position, body.size))
+		{
+			return &body;
+		}
+	}
+
+	return nullptr;
 }

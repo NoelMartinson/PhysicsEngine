@@ -3,7 +3,7 @@
 #include "Collision.h"
 #include <vector>
 
-struct World
+class World
 {
 public:
     World()
@@ -15,9 +15,15 @@ public:
     void AddEffector(class Effector* effector);
     void Step(float dt);
     void Draw();
+    void SetBounds(Vector2 min, Vector2 max) { boundsMin = min; boundsMax = max; }
+
 
     std::vector<Body>& GetBodies() { return bodies; }
     const std::vector<Body>& GetBodies() const { return bodies; }
+
+    Body* GetBodyIntersect(Vector2 position);
+
+	static void SetGravity(Vector2 newgravity) { gravity = newgravity; }
 
 private:
     void UpdateCollision();
@@ -28,4 +34,7 @@ private:
     std::vector<Body> bodies;
     std::vector<Contact> contacts;
     std::vector<class Effector*> effectors;
+
+    Vector2 boundsMin{ -10.0f, -5.0f };
+    Vector2 boundsMax{ 10.0f,  5.0f };
 };

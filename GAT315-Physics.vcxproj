@@ -302,15 +302,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AreaEffector.h" />
     <ClInclude Include="Body.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="Effector.h" />
     <ClInclude Include="GravitationEffector.h" />
+    <ClInclude Include="gui_physics.h" />
     <ClInclude Include="include\resource_dir.h" />
     <ClInclude Include="Integrator.h" />
     <ClInclude Include="PointEffector.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="raygui\src\raygui.h" />
+    <ClInclude Include="Spring.h" />
     <ClInclude Include="World.h" />
+    <ClInclude Include="world_camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\icon.ico" />
@@ -327,12 +332,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AreaEffector.cpp" />
     <ClCompile Include="Body.cpp" />
     <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="DragEffector.cpp" />
+    <ClCompile Include="DragEffector.h" />
+    <ClCompile Include="Effector.cpp" />
     <ClCompile Include="GravitationEffector.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="PointEffector.cpp" />
+    <ClCompile Include="Spring.cpp" />
     <ClCompile Include="World.cpp" />
+    <ClCompile Include="world_camera.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
